@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Marcador</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        :root {
+            --bg: #000000;
+            --text: #ffffff;
+            --accent: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            touch-action: manipulation;
+            padding: 20px;
+        }
+
+        .app {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .player1 {
+            background: linear-gradient(to bottom, rgba(0, 255, 136, 0.03), transparent);
+        }
+
+        .player2 {
+            background: linear-gradient(to top, rgba(0, 255, 136, 0.03), transparent);
+        }
+
+        .name {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 9vw;
+            font-weight: 500;
+            text-align: center;
+            width: 100%;
+            margin-top: 5vh;
+            padding: 8px 0;
+            outline: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .name:focus {
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .score-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 10vw;
+            flex: 1;
+        }
+
+        .btn {
+            width: 80px;
+            height: 80px;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text);
+            font-size: 16vw;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            transition: all 0.1s ease;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.30);
+        }
+
+        .minus {
+            color: #ff3b5c;
+            background: rgba(255, 59, 92, 0.15);
+        }
+
+        .plus {
+            color: var(--accent);
+            background: rgba(0, 255, 136, 0.15);
+        }
+
+        .score {
+            font-size: 38vw;
+            font-weight: 900;
+            line-height: 1;
+            min-width: 38vw;
+            text-align: center;
+            text-shadow: 0 0 40px rgba(0, 255, 136, 0.4), 0 0 80px rgba(0, 255, 136, 0.2);
+            user-select: none;
+        }
+
+        .footer {
+            height: 14vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            margin: 0 -20px -20px -20px;
+        }
+
+        .reset {
+            background: #1f1f1f;
+            color: #aaaaaa;
+            border: 2px solid #444;
+            padding: 10px 42px;
+            font-size: 4.8vw;
+            font-weight: 300;
+            border-radius: 50px;
+            letter-spacing: 3px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s;
+        }
+
+        .reset:active {
+            transform: scale(0.95);
+            background: #333;
+        }
+
+        .separator {
+            height: 1px;
+            width: 70%;
+            background: linear-gradient(to right, transparent, #333, transparent);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="player player1" id="player1">
+            <input type="text" id="name1" class="name" value="Jogador 1" maxlength="20">
+            <div class="score-area">
+                <button class="btn minus" data-player="1">−</button>
+                <div class="score" id="score1">0</div>
+                <button class="btn plus" data-player="1">+</button>
+            </div>
+            <div class="separator"></div>
+        </div>
+
+        <div class="player player2" id="player2">
+            <input type="text" id="name2" class="name" value="Jogador 2" maxlength="20">
+            <div class="score-area">
+                <button class="btn minus" data-player="2">−</button>
+                <div class="score" id="score2">0</div>
+                <button class="btn plus" data-player="2">+</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button id="reset" class="reset">RESET</button>
+        </div>
+    </div>
+
+    <script>
+        // Elementos
+        const name1El = document.getElementById('name1');
+        const name2El = document.getElementById('name2');
+        const score1El = document.getElementById('score1');
+        const score2El = document.getElementById('score2');
+
+        let score1 = 0;
+        let score2 = 0;
+
+        // Carrega dados salvos (se existirem)
+        function loadData() {
+            const saved = localStorage.getItem('placarApp');
+            if (saved) {
+                const data = JSON.parse(saved);
+                name1El.value = data.name1 || 'Jogador 1';
+                name2El.value = data.name2 || 'Jogador 2';
+                score1 = data.score1 || 0;
+                score2 = data.score2 || 0;
+                score1El.textContent = score1;
+                score2El.textContent = score2;
+            }
+        }
+
+        // Salva tudo no localStorage
+        function saveData() {
+            const data = {
+                name1: name1El.value.trim(),
+                name2: name2El.value.trim(),
+                score1: score1,
+                score2: score2
+            };
+            localStorage.setItem('placarApp', JSON.stringify(data));
+        }
+
+        // Atualiza placar e salva
+        function updateScore(player, value) {
+            if (player === 1) {
+                score1 = Math.max(0, value);
+                score1El.textContent = score1;
+            } else {
+                score2 = Math.max(0, value);
+                score2El.textContent = score2;
+            }
+            saveData();
+        }
+
+        // Eventos nos botões +/-
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const player = parseInt(btn.dataset.player);
+                const isPlus = btn.classList.contains('plus');
+                const current = player === 1 ? score1 : score2;
+                updateScore(player, isPlus ? current + 1 : current - 1);
+
+                if (navigator.vibrate) navigator.vibrate(30);
+            });
+        });
+
+        // Salva nomes quando alterados
+        name1El.addEventListener('input', saveData);
+        name2El.addEventListener('input', saveData);
+        // Também salva ao perder foco (útil em mobile)
+        name1El.addEventListener('blur', saveData);
+        name2El.addEventListener('blur', saveData);
+
+        // Reset
+        document.getElementById('reset').addEventListener('click', () => {
+            score1 = 0;
+            score2 = 0;
+            score1El.textContent = '0';
+            score2El.textContent = '0';
+            name1El.value = 'Jogador 1';
+            name2El.value = 'Jogador 2';
+            localStorage.removeItem('placarApp');  // limpa tudo
+
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+        });
+
+        // Previne zoom duplo no mobile
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', e => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) e.preventDefault();
+            lastTouchEnd = now;
+        }, false);
+
+        // Carrega ao iniciar
+        loadData();
+    </script>
+</body>
+
+</html>
