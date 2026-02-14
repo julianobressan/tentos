@@ -131,13 +131,14 @@
         }
 
         .footer {
-            height: 14vh;
+            height: 13vh;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #0a0a0a;
             border-top: 1px solid #222;
             margin: 0 -20px -20px -20px;
+            flex-direction: column;
         }
 
         .reset {
@@ -167,6 +168,14 @@
             left: 50%;
             transform: translateX(-50%);
         }
+
+        p {
+            margin-top: 16px;
+            font-family: sans-serif;
+            font-size: 14px;
+            color: #aaaaaa;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -193,7 +202,9 @@
 
         <div class="footer">
             <button id="reset" class="reset">RESET</button>
+
         </div>
+        <p>Desenvolvido por Juliano Bressan<br>Versão 1.0</p>
     </div>
 
     <script>
