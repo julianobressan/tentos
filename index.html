@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Marcador de Tentos</title>
+    <title>Marcador</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Short+Stack&display=swap');
 
         :root {
             --bg: #000000;
@@ -21,7 +21,7 @@
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Short Stack', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             height: 100vh;
@@ -57,15 +57,16 @@
             background: none;
             border: none;
             color: var(--text);
-            font-size: 9vw;
+            font-size: 15vw;
             font-weight: 500;
             text-align: center;
             width: 100%;
             margin-top: 5vh;
             padding: 8px 0;
             outline: none;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+            /* text-transform: uppercase; */
+            letter-spacing: 0px;
+            font-family: 'Short Stack', system-ui, sans-serif;
         }
 
         .name:focus {
@@ -116,7 +117,7 @@
         }
 
         .score {
-            font-size: 38vw;
+            font-size: 30vw;
             font-weight: 900;
             line-height: 1;
             min-width: 38vw;
@@ -143,7 +144,7 @@
             font-size: 4.8vw;
             font-weight: 300;
             border-radius: 50px;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             transition: all 0.2s;
         }
@@ -263,8 +264,6 @@
             score2 = 0;
             score1El.textContent = '0';
             score2El.textContent = '0';
-            name1El.value = 'Jogador 1';
-            name2El.value = 'Jogador 2';
             localStorage.removeItem('placarApp');  // limpa tudo
 
             if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
